@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import HyperspaceBackground from '../components/HyperspaceBackground';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -45,132 +46,170 @@ const Login = () => {
     }
   };
 
-  // --- GLOBAL THEME WRAPPER ---
-  const globalTronStyle = {
-    minHeight: '100vh',
-    backgroundColor: '#050505',
-    color: '#0fe0ff',
-    fontFamily: '"Courier New", Courier, monospace',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: '20px',
-    boxSizing: 'border-box'
+// --- STAR WARS / HOLONET THEME ---
+  const theme = {
+    wrapper: {
+      minHeight: '100vh',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: 'transparent', // Deep space black
+      backgroundImage: 'radial-gradient(circle at 50% 50%, #111 0%, #000 100%)',
+      fontFamily: '"Courier New", Courier, monospace', // Matches the TRON terminal vibe
+      padding: '20px',
+      boxSizing: 'border-box',
+      position: 'relative'
+    },
+    datapadCard: {
+      zIndex: 10,
+      backgroundColor: 'rgba(10, 10, 10, 0.85)',
+      padding: '40px',
+      border: '1px solid #333',
+      borderTop: '3px solid #0fe0ff', // Skywalker/TRON Cyan
+      borderBottom: '3px solid #ff003c', // Sith/Disconnect Red
+      width: '100%',
+      maxWidth: '450px',
+      boxShadow: '0 0 30px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(15, 224, 255, 0.05)',
+      position: 'relative',
+      backdropFilter: 'blur(5px)'
+    },
+    title: {
+      textAlign: 'center',
+      color: '#FFE81F', // Classic Star Wars Crawl Yellow
+      fontSize: '1.8rem',
+      fontWeight: 'bold',
+      letterSpacing: '5px',
+      marginTop: '0',
+      marginBottom: '35px',
+      textShadow: '0 0 10px rgba(255, 232, 31, 0.4)',
+      textTransform: 'uppercase'
+    },
+    errorBox: {
+      backgroundColor: 'rgba(255, 0, 60, 0.1)',
+      color: '#ff003c',
+      border: '1px solid #ff003c',
+      padding: '12px',
+      marginBottom: '20px',
+      textAlign: 'center',
+      fontWeight: 'bold',
+      fontSize: '14px',
+      letterSpacing: '1px',
+      textShadow: '0 0 5px #ff003c'
+    },
+    label: {
+      display: 'block',
+      fontWeight: 'bold',
+      color: '#0fe0ff', // TRON Cyan
+      marginBottom: '8px',
+      fontSize: '13px',
+      letterSpacing: '2px'
+    },
+    input: {
+      width: '100%',
+      padding: '12px',
+      marginBottom: '25px',
+      border: 'none',
+      borderBottom: '2px solid #333',
+      backgroundColor: 'rgba(255, 255, 255, 0.02)',
+      color: '#fff',
+      fontSize: '16px',
+      fontFamily: 'monospace',
+      boxSizing: 'border-box',
+      outline: 'none',
+      transition: 'border-color 0.3s, box-shadow 0.3s',
+    },
+    button: {
+      width: '100%',
+      padding: '15px',
+      backgroundColor: 'transparent',
+      color: '#FFE81F', // Star Wars Yellow
+      border: '2px solid #FFE81F',
+      cursor: 'pointer',
+      fontSize: '16px',
+      fontWeight: 'bold',
+      letterSpacing: '3px',
+      textTransform: 'uppercase',
+      boxShadow: '0 0 10px rgba(255, 232, 31, 0.2)',
+      transition: 'all 0.3s ease',
+      marginTop: '10px'
+    },
+    footerText: {
+      textAlign: 'center',
+      marginTop: '35px',
+      fontSize: '12px',
+      color: '#ea0a6feb',
+      letterSpacing: '1px'
+    },
+    link: {
+      color: '#00ff41', // Jedi/TRON Green
+      textDecoration: 'none',
+      textShadow: '0 0 5px rgba(0, 255, 65, 0.5)',
+      marginLeft: '8px',
+      fontWeight: 'bold'
+    }
   };
 
-  return (
-    <div style={globalTronStyle}>
-      <div style={{ 
-        width: '100%', 
-        maxWidth: '450px', 
-        backgroundColor: '#0a0a0a', 
-        padding: '40px', 
-        border: '1px solid #0fe0ff', 
-        boxShadow: '0 0 20px rgba(15, 224, 255, 0.2)',
-        position: 'relative'
-      }}>
+ return (
+    <div style={theme.wrapper}>
+      <HyperspaceBackground />
+      <div style={theme.datapadCard}>
         
-        {/* Corner Accents */}
-        <div style={{ position: 'absolute', top: '-1px', left: '-1px', width: '15px', height: '15px', borderTop: '2px solid #0fe0ff', borderLeft: '2px solid #0fe0ff' }}></div>
-        <div style={{ position: 'absolute', bottom: '-1px', right: '-1px', width: '15px', height: '15px', borderBottom: '2px solid #0fe0ff', borderRight: '2px solid #0fe0ff' }}></div>
+        {/* Subtle decorative tech lines */}
+        <div style={{ position: 'absolute', top: '10px', left: '10px', width: '20px', borderTop: '2px solid #333' }}></div>
+        <div style={{ position: 'absolute', top: '10px', right: '10px', width: '20px', borderTop: '2px solid #333' }}></div>
 
-        <h2 style={{ 
-          textAlign: 'center', 
-          letterSpacing: '3px', 
-          marginBottom: '30px',
-          // The Text Gradient Magic
-          background: 'linear-gradient(90deg, #0fe0ff, #00ff41)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          // Keeping a soft glow behind it
-          textShadow: '0 0 15px rgba(15, 224, 255, 0.4)' 
-        }}>
-          TERMINAL_LOGIN
-        </h2>
+        <h2 style={theme.title}>HOLONET UPLINK</h2>
         
         {error && (
-          <div style={{ 
-            color: '#ff003c', 
-            marginBottom: '20px', 
-            padding: '12px', 
-            border: '1px solid #ff003c', 
-            backgroundColor: '#1a0505', 
-            textShadow: '0 0 5px #ff003c',
-            textAlign: 'center',
-            fontWeight: 'bold',
-            fontSize: '14px'
-          }}>
-            // ERR: {error}
+          <div style={theme.errorBox}>
+            // ACCESS DENIED: {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column' }}>
           <div>
-            <label style={{ display: 'block', marginBottom: '8px', color: '#aaa', fontSize: '14px', letterSpacing: '1px' }}>TARGET_EMAIL</label>
+            <label style={theme.label}>CITIZEN_ID</label>
             <input 
               type="email" 
               name="email" 
               value={formData.email} 
               onChange={handleChange} 
               required 
-              style={{ 
-                width: '100%', 
-                padding: '12px', 
-                backgroundColor: '#000', 
-                color: '#00ff41', 
-                border: '1px solid #333', 
-                outline: 'none', 
-                fontFamily: 'monospace',
-                boxSizing: 'border-box'
-              }} 
+              style={theme.input} 
+              placeholder="Enter clearance email..."
+              onFocus={(e) => { e.target.style.borderBottom = '2px solid #0fe0ff'; e.target.style.boxShadow = '0 2px 5px rgba(15,224,255,0.2)'; }}
+              onBlur={(e) => { e.target.style.borderBottom = '2px solid #333'; e.target.style.boxShadow = 'none'; }}
             />
           </div>
 
           <div>
-            <label style={{ display: 'block', marginBottom: '8px', color: '#aaa', fontSize: '14px', letterSpacing: '1px' }}>SECURITY_KEY</label>
+            <label style={theme.label}>SECURITY_CODE</label>
             <input 
               type="password" 
               name="password" 
               value={formData.password} 
               onChange={handleChange} 
               required 
-              style={{ 
-                width: '100%', 
-                padding: '12px', 
-                backgroundColor: '#000', 
-                color: '#00ff41', 
-                border: '1px solid #333', 
-                outline: 'none', 
-                fontFamily: 'monospace',
-                boxSizing: 'border-box'
-              }} 
+              style={theme.input} 
+              placeholder="••••••••"
+              onFocus={(e) => { e.target.style.borderBottom = '2px solid #ff003c'; e.target.style.boxShadow = '0 2px 5px rgba(255,0,60,0.2)'; }}
+              onBlur={(e) => { e.target.style.borderBottom = '2px solid #333'; e.target.style.boxShadow = 'none'; }}
             />
           </div>
 
           <button 
             type="submit" 
-            style={{ 
-              padding: '15px', 
-              marginTop: '10px', 
-              backgroundColor: 'transparent', 
-              color: '#0fe0ff', 
-              border: '2px solid #0fe0ff', 
-              cursor: 'pointer', 
-              fontSize: '16px', 
-              fontWeight: 'bold', 
-              letterSpacing: '2px', 
-              boxShadow: '0 0 10px rgba(15,224,255,0.4)', 
-              transition: 'all 0.3s' 
-            }}
-            onMouseOver={(e) => { e.currentTarget.style.backgroundColor = '#0fe0ff'; e.currentTarget.style.color = '#000'; }}
-            onMouseOut={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = '#0fe0ff'; }}
+            style={theme.button}
+            onMouseOver={(e) => { e.currentTarget.style.backgroundColor = '#FFE81F'; e.currentTarget.style.color = '#000'; }}
+            onMouseOut={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = '#FFE81F'; }}
           >
-            INITIATE UPLINK
+            BYPASS SECURITY
           </button>
         </form>
 
-        <p style={{ marginTop: '30px', textAlign: 'center', color: '#666', fontSize: '13px' }}>
-          NO ACCESS DELEGATED? <Link to="/register" style={{ color: '#00ff41', textDecoration: 'none', textShadow: '0 0 5px rgba(0, 255, 65, 0.5)', marginLeft: '5px' }}>[ INITIALIZE PROFILE ]</Link>
+        <p style={theme.footerText}>
+          NO CREDENTIALS FOUND? 
+          <Link to="/register" style={theme.link}>[ FORGE IDENTITY ]</Link>
         </p>
       </div>
     </div>

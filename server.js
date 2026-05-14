@@ -128,7 +128,7 @@ app.post('/api/campaigns/generate', async (req, res) => {
 // 4. FETCH PLAYER'S MAP ROUTE
 app.get('/api/campaigns/:userId', async (req, res) => {
   try {
-    const campaign = await Campaign.findOne({ user_id: req.params.userId });
+    const campaign = await Campaign.find({ user_id: req.params.userId });
     if (!campaign) {
       return res.status(404).json({ message: "No map found." });
     }
@@ -180,7 +180,7 @@ app.post('/api/quests/quiz', async (req, res) => {
 // 6. AWARD XP & LEVEL UP ROUTE
 app.put('/api/users/:id/xp', async (req, res) => {
   try {
-    const { xpGained } = req.body;
+    const { xpGained, questName} = req.body;
     
     // 1. Find the player
     const player = await User.findById(req.params.id);
@@ -188,6 +188,12 @@ app.put('/api/users/:id/xp', async (req, res) => {
 
     // 2. Add the XP
     player.current_xp += xpGained;
+    player.daily_xp += xpGained;
+
+    // --- NEW: Add the quest to their completed list if it isn't already there ---
+    if (questName && !player.completed_quests.includes(questName)) {
+      player.completed_quests.push(questName);
+    }
 
     // 3. RPG Logic: Every 1000 XP = 1 Level!
     const newLevel = Math.floor(player.current_xp / 1000) + 1;
@@ -211,6 +217,54 @@ app.put('/api/users/:id/xp', async (req, res) => {
   } catch (error) {
     console.error("XP Error:", error);
     res.status(500).json({ message: "Failed to update player stats." });
+  }
+});
+
+
+// 7. FETCH PLAYER STATS & CHECK MIDNIGHT RESET
+app.get('/api/users/:id', async (req, res) => {
+  try {
+    const player = await User.findById(req.params.id);
+    if (!player) return res.status(404).json({ message: "Player not found." });
+
+    // --- THE MIDNIGHT CHECKER ---
+    const today = new Date().toDateString(); // Gets a simple string like "Sun May 10 2026"
+    
+    // If the last reset was NOT today, it means midnight has passed!
+    if (player.last_reset !== today) {
+      player.daily_xp = 0;       // Drain the daily bar
+      player.last_reset = today; // Update the clock
+      await player.save();       // Save the reset to the database
+    }
+
+    res.status(200).json(player);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to access mainframe data." });
+  }
+});
+
+// --- DELETE A DIRECTIVE (QUEST) ---
+app.delete('/api/campaigns/:campaignId/quests/:questName', async (req, res) => {
+  try {
+    const { campaignId, questName } = req.params;
+    
+    // Find the active campaign
+    const campaign = await Campaign.findById(campaignId);
+    if (!campaign) return res.status(404).json({ message: "Database not found." });
+
+    // Loop through all regions and filter out the quest that matches the name
+    campaign.regions.forEach(region => {
+      region.quests = region.quests.filter(q => q.quest_name !== questName);
+    });
+
+    // Save the updated campaign back to MongoDB
+    await campaign.save();
+    
+    // Return the fresh campaign to the frontend
+    res.status(200).json(campaign);
+  } catch (error) {
+    console.error("Failed to purge directive:", error);
+    res.status(500).json({ message: "Server error during deletion." });
   }
 });
 
