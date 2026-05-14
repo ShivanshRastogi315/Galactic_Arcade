@@ -312,7 +312,8 @@ app.delete('/api/campaigns/:campaignId/quests/:questName', async (req, res) => {
 
 
 // --- START THE SERVER ---
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5000; 
+
 app.listen(PORT, () => {
-  console.log(`🚀 Backend Server running on http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });

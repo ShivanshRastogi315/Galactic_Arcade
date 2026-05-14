@@ -26,7 +26,7 @@ const Hangar = () => {
 
   useEffect(() => {
     if (!scholarId) return navigate('/login');
-    fetch(`http://localhost:5000/api/users/${scholarId}`)
+    fetch(`import.meta.env.VITE_API_URL/api/users/${scholarId}`)
       .then(res => res.json())
       .then(data => { setPlayer(data); setIsLoading(false); })
       .catch(err => console.error(err));
@@ -34,7 +34,7 @@ const Hangar = () => {
 
   const handleTransaction = async (type, item, action) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/users/${scholarId}/hangar`, {
+      const res = await fetch(`import.meta.env.VITE_API_URL/api/users/${scholarId}/hangar`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ type, itemName: item.id, cost: item.cost, action })
