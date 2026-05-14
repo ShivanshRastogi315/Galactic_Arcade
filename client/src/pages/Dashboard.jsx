@@ -4,6 +4,10 @@ import SpaceBattleBackground from '../components/SpaceBattleBackground';
 
 const Dashboard = () => {
   // --- NEW: Multi-Campaign State ---
+  const [credits, setCredits] = useState(0);
+  const [streak, setStreak] = useState(0);
+  const [badges, setBadges] = useState([]);
+
   const [campaigns, setCampaigns] = useState([]);
   const [activeCampaign, setActiveCampaign] = useState(null);
   const [isCreating, setIsCreating] = useState(false);
@@ -53,6 +57,9 @@ const Dashboard = () => {
           setPlayerLevel(userData.level || 1);
           setDailyXp(userData.daily_xp || 0);
           setCompletedQuests(userData.completed_quests || []);
+          setCredits(userData.credits || 0);
+          setStreak(userData.streak_count || 0);
+          setBadges(userData.badges || []);
         }
       } catch (err) {
         console.error("Failed to load terminal data:", err);
@@ -139,6 +146,8 @@ const Dashboard = () => {
         setPlayerXp(data.player.current_xp);
         setDailyXp(data.player.daily_xp);
         setCompletedQuests(data.player.completed_quests || []);
+        setCredits(data.player.credits);
+        setStreak(data.player.streak_count);
       } catch (err) {
         console.error(err);
       }
@@ -202,6 +211,9 @@ const Dashboard = () => {
         
         {/* --- GLOBAL HEADER BUTTONS --- */}
         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '15px', marginBottom: '20px' }}>
+          <button onClick={() => navigate('/hangar')} style={{ padding: '8px 15px', backgroundColor: 'rgba(255, 232, 31, 0.1)', color: '#FFE81F', border: '1px solid #FFE81F', cursor: 'pointer', fontWeight: 'bold', fontSize: '12px', letterSpacing: '1px', textShadow: '0 0 5px rgba(255, 232, 31, 0.5)', boxShadow: '0 0 8px rgba(255, 232, 31, 0.2)' }}>
+            [ ENTER HANGAR ]
+          </button>
           {activeCampaign && (
             <button onClick={() => { setActiveCampaign(null); setSelectedRegion(null); }} style={{ padding: '8px 15px', backgroundColor: 'rgba(15, 224, 255, 0.1)', color: '#0fe0ff', border: '1px solid #0fe0ff', cursor: 'pointer', fontWeight: 'bold', fontSize: '12px', letterSpacing: '1px', textTransform: 'uppercase', boxShadow: '0 0 8px rgba(15,224,255,0.3)' }}>
               [ SWITCH DIRECTIVE ]
@@ -213,16 +225,37 @@ const Dashboard = () => {
         </div>
 
         {/* --- PLAYER STATS WIDGET --- */}
+        {/* --- PLAYER STATS WIDGET --- */}
         <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-          <div style={{ backgroundColor: 'rgba(17, 17, 17, 0.8)', backdropFilter: 'blur(4px)', padding: '20px', display: 'inline-block', minWidth: '350px', border: '1px solid #0fe0ff', boxShadow: '0 0 15px rgba(15,224,255,0.2)' }}>
+          <div style={{ backgroundColor: 'rgba(17, 17, 17, 0.8)', backdropFilter: 'blur(4px)', padding: '20px', display: 'inline-block', minWidth: '400px', border: '1px solid #0fe0ff', boxShadow: '0 0 15px rgba(15,224,255,0.2)' }}>
+            
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '15px', fontSize: '16px', color: '#fff' }}>
               <span>ID: <span style={{ color: '#0fe0ff' }}>{scholarName}</span></span>
               <span>LVL: <span style={{ color: '#00ff41' }}>{playerLevel}</span></span>
             </div>
+
+            {/* NEW: Credits and Streak Info */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '15px', fontSize: '14px', color: '#aaa', borderBottom: '1px dashed #333', paddingBottom: '10px' }}>
+              <span>CREDITS: <span style={{ color: '#FFE81F', fontWeight: 'bold' }}>{credits} ¤</span></span>
+              <span>STREAK: <span style={{ color: '#ff003c', fontWeight: 'bold' }}>{streak} DAYS 🔥</span></span>
+            </div>
+
             <div style={{ width: '100%', backgroundColor: '#000', height: '20px', border: '1px solid #333', position: 'relative' }}>
               <div style={{ width: `${Math.min((dailyXp / 1000) * 100, 100)}%`, backgroundColor: '#00ff41', height: '100%', transition: 'width 0.8s ease-in-out', boxShadow: '0 0 10px #00ff41' }}></div>
               <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '11px', color: '#fff', fontWeight: 'bold', mixBlendMode: 'difference' }}>{dailyXp} / 1000 DAILY XP</div>
             </div>
+            
+            {/* NEW: Badges Display */}
+            {badges.length > 0 && (
+              <div style={{ marginTop: '15px', display: 'flex', gap: '10px', justifyContent: 'center' }}>
+                {badges.map(badge => (
+                  <span key={badge} style={{ fontSize: '10px', backgroundColor: 'rgba(255, 232, 31, 0.1)', color: '#FFE81F', border: '1px solid #FFE81F', padding: '3px 8px', borderRadius: '3px' }}>
+                    🏅 {badge.replace('_', ' ')}
+                  </span>
+                ))}
+              </div>
+            )}
+            
           </div>
         </div>
 

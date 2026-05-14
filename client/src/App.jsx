@@ -2,6 +2,8 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Register from './pages/Register.jsx';
 import Login from './pages/Login.jsx';
 import Dashboard from './pages/Dashboard.jsx';
+import Hangar from './pages/Hangar';
+import Landing from './pages/Landing';
 
 // We will build these components next!
 // const Login = () => <div><h2>Login Page</h2></div>;
@@ -15,8 +17,7 @@ function App() {
         {/* Navigation/Header can go here later */}
         
         <Routes>
-          {/* Default route redirects to login */}
-          <Route path="/" element={<Navigate to="/login" />} />
+          <Route path="/" element={<Landing />} />
           
           {/* Distinct User Authentication Pages */}
           <Route path="/login" element={<Login />} />
@@ -24,6 +25,8 @@ function App() {
           
           {/* The Main Application */}
           <Route path="/dashboard" element={<Dashboard />} />
+
+          <Route path="/hangar" element={<Hangar />} />
         </Routes>
       </div>
     </BrowserRouter>

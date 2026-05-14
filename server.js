@@ -177,46 +177,88 @@ app.post('/api/quests/quiz', async (req, res) => {
   }
 });
 
-// 6. AWARD XP & LEVEL UP ROUTE
+//6 --- COMPLETE QUEST, AWARD XP, CREDITS, AND STREAKS ---
 app.put('/api/users/:id/xp', async (req, res) => {
   try {
-    const { xpGained, questName} = req.body;
-    
-    // 1. Find the player
-    const player = await User.findById(req.params.id);
-    if (!player) return res.status(404).json({ message: "Player not found." });
+    const { xpGained, questName } = req.body;
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json({ message: "User not found" });
 
-    // 2. Add the XP
-    player.current_xp += xpGained;
-    player.daily_xp += xpGained;
-
-    // --- NEW: Add the quest to their completed list if it isn't already there ---
-    if (questName && !player.completed_quests.includes(questName)) {
-      player.completed_quests.push(questName);
+    // 1. Mark quest as complete
+    if (!user.completed_quests.includes(questName)) {
+      user.completed_quests.push(questName);
     }
 
-    // 3. RPG Logic: Every 1000 XP = 1 Level!
-    const newLevel = Math.floor(player.current_xp / 1000) + 1;
-    
+    // 2. Add XP for Leveling AND Credits for the Hangar
+    user.current_xp += xpGained;
+    user.daily_xp += xpGained;
+    user.credits += xpGained; // Fuel for the Hangar economy!
+
+    // 3. Level Up Logic
+    const xpNeeded = user.level * 1000;
     let leveledUp = false;
-    if (newLevel > player.level) {
-      player.level = newLevel;
-      player.max_hp += 50; // Grant them more health on level up!
-      player.current_hp = player.max_hp;
+    if (user.current_xp >= xpNeeded) {
+      user.level += 1;
+      user.current_xp -= xpNeeded;
       leveledUp = true;
     }
 
-    await player.save();
+    // 4. STREAK LOGIC
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    if (!user.last_active_date) {
+      user.streak_count = 1;
+      user.last_active_date = today;
+    } else {
+      const lastActive = new Date(user.last_active_date);
+      lastActive.setHours(0, 0, 0, 0);
+      
+      const diffTime = Math.abs(today - lastActive);
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
 
-    res.status(200).json({ 
-      message: "XP Awarded!", 
-      player, 
-      leveledUp 
-    });
+      if (diffDays === 1) {
+        user.streak_count += 1;
+        user.last_active_date = today;
+        
+        // Bonus Credits for keeping a streak!
+        if (user.streak_count % 3 === 0) user.credits += 500; 
+      } else if (diffDays > 1) {
+        user.streak_count = 1;
+        user.last_active_date = today;
+      }
+    }
 
-  } catch (error) {
-    console.error("XP Error:", error);
-    res.status(500).json({ message: "Failed to update player stats." });
+    // 5. BADGES & EXCLUSIVE HANGAR UNLOCKS
+    let newUnlocks = []; // To tell the frontend if they unlocked a secret item
+
+    // Level 5 Milestone: Veteran Badge + Secret Gold Theme
+    if (user.level >= 5 && !user.badges.includes('VETERAN_SCHOLAR')) {
+      user.badges.push('VETERAN_SCHOLAR');
+      
+      if (!user.unlocked_themes.includes('veteran-gold')) {
+        user.unlocked_themes.push('veteran-gold');
+        newUnlocks.push('VETERAN GOLD THEME');
+      }
+    }
+
+    // 10 Quests Milestone: Data Master Badge + Secret TIE-Fighter
+    if (user.completed_quests.length >= 10 && !user.badges.includes('DATA_MASTER')) {
+      user.badges.push('DATA_MASTER');
+
+      if (!user.unlocked_ships.includes('tie-fighter')) {
+        user.unlocked_ships.push('tie-fighter');
+        newUnlocks.push('CAPTURED TIE-FIGHTER');
+      }
+    }
+
+    await user.save();
+    
+    // Return the newUnlocks array so the frontend can trigger an alert!
+    res.status(200).json({ player: user, leveledUp, newUnlocks });
+  } catch (err) {
+    console.error("XP Error:", err);
+    res.status(500).json({ message: "Server error" });
   }
 });
 
