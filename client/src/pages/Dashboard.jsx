@@ -37,8 +37,8 @@ const Dashboard = () => {
     const fetchDashboardData = async () => {
       try {
         const [campaignRes, userRes] = await Promise.all([
-          fetch(`import.meta.env.VITE_API_URL/api/campaigns/${scholarId}`),
-          fetch(`import.meta.env.VITE_API_URL/api/users/${scholarId}`)
+          fetch(`${import.meta.env.VITE_API_URL}/api/campaigns/${scholarId}`),
+          fetch(`${import.meta.env.VITE_API_URL}/api/users/${scholarId}`)
         ]);
 
         if (campaignRes.ok) {
@@ -75,7 +75,7 @@ const Dashboard = () => {
     if (!syllabusInput.trim()) return;
     setIsLoading(true);
     try {
-      const response = await fetch('import.meta.env.VITE_API_URL/api/campaigns/generate', {
+      const response = await fetch('${import.meta.env.VITE_API_URL}/api/campaigns/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: scholarId, syllabusText: syllabusInput }),
@@ -106,7 +106,7 @@ const Dashboard = () => {
     setSelectedAnswers({});
     
     try {
-      const response = await fetch('import.meta.env.VITE_API_URL/api/quests/quiz', {
+      const response = await fetch('${import.meta.env.VITE_API_URL}/api/quests/quiz', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ topic: questName }),
@@ -133,7 +133,7 @@ const Dashboard = () => {
 
     if (xpEarned > 0) {
       try {
-        const response = await fetch(`import.meta.env.VITE_API_URL/api/users/${scholarId}/xp`, {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/${scholarId}/xp`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ xpGained: xpEarned, questName: activeQuestName }), 
@@ -168,7 +168,7 @@ const Dashboard = () => {
     }
 
     try {
-      const response = await fetch(`import.meta.env.VITE_API_URL/api/campaigns/${activeCampaign._id}/quests/${encodeURIComponent(questName)}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/campaigns/${activeCampaign._id}/quests/${encodeURIComponent(questName)}`, {
         method: 'DELETE',
       });
 

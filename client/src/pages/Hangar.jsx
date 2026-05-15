@@ -34,7 +34,7 @@ const Hangar = () => {
 
   const handleTransaction = async (type, item, action) => {
     try {
-      const res = await fetch(`import.meta.env.VITE_API_URL/api/users/${scholarId}/hangar`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/users/${scholarId}/hangar`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ type, itemName: item.id, cost: item.cost, action })
