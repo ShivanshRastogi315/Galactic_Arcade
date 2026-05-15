@@ -11,6 +11,10 @@ const Campaign = require('./models/Campaign');
 
 const app = express();
 
+app.get('/', (req, res) => {
+  res.send('GALACTIC ARCADE MAINFRAME: ONLINE');
+});
+
 // --- MIDDLEWARE ---
 app.use(cors());
 app.use(express.json());
