@@ -23,6 +23,7 @@ const Login = () => {
     setError('');
     
     try {
+      console.log("PINGING MAINFRAME AT:", `${import.meta.env.VITE_API_URL}/api/login`);
       const response = await fetch(`${import.meta.env.VITE_API_URL}`, {
         method: 'POST',
         headers: {
