@@ -26,7 +26,7 @@ const Hangar = () => {
 
   useEffect(() => {
     if (!scholarId) return navigate('/login');
-    fetch(`import.meta.env.VITE_API_URL/api/users/${scholarId}`)
+    fetch(`${import.meta.env.VITE_API_URL}/api/users/${scholarId}`)
       .then(res => res.json())
       .then(data => { setPlayer(data); setIsLoading(false); })
       .catch(err => console.error(err));

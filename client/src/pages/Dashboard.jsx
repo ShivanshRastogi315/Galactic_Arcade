@@ -75,7 +75,7 @@ const Dashboard = () => {
     if (!syllabusInput.trim()) return;
     setIsLoading(true);
     try {
-      const response = await fetch('${import.meta.env.VITE_API_URL}/api/campaigns/generate', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/campaigns/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: scholarId, syllabusText: syllabusInput }),
@@ -106,7 +106,7 @@ const Dashboard = () => {
     setSelectedAnswers({});
     
     try {
-      const response = await fetch('${import.meta.env.VITE_API_URL}/api/quests/quiz', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/quests/quiz`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ topic: questName }),
